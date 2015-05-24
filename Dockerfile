@@ -23,6 +23,7 @@ RUN curl --silent --show-error --retry 5 https://bootstrap.pypa.io/get-pip.py | 
 ADD . /bazaar
 RUN cd /bazaar && pip install -r requirements.txt
 
+ENV LOGNAME openbazaar
 ENV RUNSH_ARGS -q 8888 -p 12345
 
 WORKDIR /bazaar
