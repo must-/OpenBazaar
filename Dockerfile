@@ -20,8 +20,11 @@ RUN apt-get install -y alien libssl-dev wget lintian libjs-jquery curl
 #
 RUN curl --silent --show-error --retry 5 https://bootstrap.pypa.io/get-pip.py | sudo python2.7
 
-ADD . /bazaar
+
+ADD ./requirements.txt /bazaar/
 RUN cd /bazaar && pip install -r requirements.txt
+
+ADD . /bazaar
 
 ENV LOGNAME openbazaar
 ENV RUNSH_ARGS -q 8888 -p 12345
