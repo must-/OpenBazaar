@@ -46,7 +46,7 @@
                                 <!--<number-only-input input-value="contract.productPrice" input-name="inputProductPrice"/>-->
                                 <div class="input-group">
                                 <span class="input-group-addon">BTC</span>
-                                <input required type="text" min="0" class="form-control" ng-model="contract.productPrice" id="inputProductPrice" name="inputProductPrice" placeholder="0.01"/>
+                                <input required type="text" min="0" max="21000000" class="form-control" ng-model="contract.productPrice" id="inputProductPrice" name="inputProductPrice" placeholder="0.01"/>
                                     </div>
                                     <div style="padding:3px;color:#999;"><strong>USD:</strong> ${{last_price_usd*contract.productPrice | number:2}}<br/>
                                     <strong>EUR:</strong> &euro;{{last_price_eur*contract.productPrice | number:2}}
@@ -59,7 +59,7 @@
                                 <label for="inputProductShippingPrice">Shipping</label>
                                 <div class="input-group">
                                     <span class="input-group-addon">BTC</span>
-                                <input type="text" class="form-control" min="0" ng-model="contract.productShippingPrice" id="inputProductShippingPrice" placeholder="0" value="0"/>
+                                <input type="text" class="form-control" min="0" max="21000000" ng-model="contract.productShippingPrice" id="inputProductShippingPrice" placeholder="0" value="0"/>
                                     </div>
                                     <div style="padding:3px;color:#999;"><strong>USD:</strong> ${{last_price_usd*contract.productShippingPrice | number:2}}<br/>
                                     <strong>EUR:</strong> &euro;{{last_price_eur*contract.productShippingPrice | number:2}}
@@ -130,7 +130,7 @@
                                     <p></p>
                                 </div>
                             </div>
-                            
+
                             </div>
                             <div role="tabpanel" class="product-tab-pane tab-pane" id="product-keywords">
                                 <div style="padding:10px;">

@@ -25,20 +25,8 @@ class PendingPacket(object):
 
         self._sending = True
 
-        def packet_send(counter):
-
-            def packet_lost():
-                if self._sending:
-                    self.log.info('Packet %s Lost', self._packet.get_sequence_number())
-
-            if self._sending and counter < 2:
-                self.log.debug('Sending Packet #%s: %s', self._packet.get_sequence_number(), self._sending)
-                self._packet_sender.send(self._packet)
-                packet_send(counter+1)
-            else:
-                self.loop.call_later(5, packet_lost)
-
-        packet_send(0)
+        self.log.debug('Sending Packet #%s: %s', self._packet.get_sequence_number(), self._sending)
+        self._packet_sender.send(self._packet)
 
         # self._interval_id = rudp.helpers.set_interval(
         #     packet_send,

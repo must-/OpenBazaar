@@ -101,6 +101,8 @@ class CryptoTransportLayer(TransportLayer):
         self.dev_mode = ob_ctx.dev_mode
         self.seed_mode = ob_ctx.seed_mode
         self.mediation_mode = {}
+        self.guid = ""
+        self.sin = ""
 
         self._connections = {}
         self._punches = {}
@@ -334,7 +336,6 @@ class CryptoTransportLayer(TransportLayer):
             except Exception as exc:
                 self.log.error('Could not deserialize message: %s', exc)
 
-
         self.listener.set_ok_msg({
             'type': 'ok',
             'senderGUID': self.guid,
@@ -343,7 +344,6 @@ class CryptoTransportLayer(TransportLayer):
             'v': VERSION
         })
         self.listener.listen()
-
 
     def start_ip_address_checker(self):
         '''Checks for possible public IP change'''
@@ -760,13 +760,17 @@ class CryptoTransportLayer(TransportLayer):
         self.nickname = self.settings.get('nickname', '')
         self.avatar_url = self.settings.get('avatar_url', '')
         self.namecoin_id = self.settings.get('namecoin_id', '')
+
         self.secret = self.settings.get('secret', '')
         self.pubkey = self.settings.get('pubkey', '')
+        self.cryptor = Cryptor(pubkey_hex=self.pubkey, privkey_hex=self.secret)
+
+        if not self.guid:
+            self._setup_guid()
+
         self.guid = self.settings.get('guid', '')
         self.sin = self.settings.get('sin', '')
         self.bitmessage = self.settings.get('bitmessage', '')
-
-        self.cryptor = Cryptor(pubkey_hex=self.pubkey, privkey_hex=self.secret)
 
         if not self.settings.get('bitmessage'):
             # Generate Bitmessage address
@@ -778,6 +782,30 @@ class CryptoTransportLayer(TransportLayer):
            self.ob_ctx.bm_pass is not None and \
            self.ob_ctx.bm_port is not None:
             self._connect_to_bitmessage()
+
+    def _setup_guid(self):
+        # GUIDs should be the pubkey signed with privkey then
+        # hashed with SHA256 and subsequently RIPEMD160
+        # This can provide protection against Spartacus
+        # http://xlattice.sourceforge.net/components/protocol/kademlia/specs.html
+        signed_pubkey = self.cryptor.sign(self.pubkey)
+        sha_hash = hashlib.sha256()
+        sha_hash.update(signed_pubkey)
+        ripe_hash = hashlib.new('ripemd160')
+        ripe_hash.update(sha_hash.digest())
+
+        self.guid = ripe_hash.hexdigest()
+
+        # Generate SIN
+        self.sin = obelisk.EncodeBase58Check('\x0F\x02%s' % ripe_hash.digest())
+
+        new_settings = {
+            "guid": self.guid,
+            "sin": self.sin
+        }
+
+        self.db_connection.update_entries("settings", new_settings, {"market_id": self.market_id})
+        self.settings.update(new_settings)
 
     def _generate_new_keypair(self):
 
@@ -799,24 +827,13 @@ class CryptoTransportLayer(TransportLayer):
         self.pubkey = identity_pub
         self.secret = identity_priv
 
-        # Generate SIN
-        sha_hash = hashlib.sha256()
-        sha_hash.update(self.pubkey)
-        ripe_hash = hashlib.new('ripemd160')
-        ripe_hash.update(sha_hash.digest())
-
-        self.guid = ripe_hash.hexdigest()
-        self.sin = obelisk.EncodeBase58Check('\x0F\x02%s' % ripe_hash.digest())
-
-        newsettings = {
+        new_settings = {
             "secret": self.secret,
             "pubkey": self.pubkey,
-            "guid": self.guid,
-            "sin": self.sin,
             "bip32_seed": seed
         }
-        self.db_connection.update_entries("settings", newsettings, {"market_id": self.market_id})
-        self.settings.update(newsettings)
+        self.db_connection.update_entries("settings", new_settings, {"market_id": self.market_id})
+        self.settings.update(new_settings)
 
     def _generate_new_bitmessage_addr(self):
         # Use the guid generated previously as the key

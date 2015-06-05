@@ -1,6 +1,6 @@
 # ####### IMPLEMENTATION-SPECIFIC CONSTANTS ###########
 # OpenBazaar Version Number
-VERSION = "0.4.0"
+VERSION = "0.5.0"
 
 # Max size of a single UDP datagram.
 # Any larger message will be spread accross several UDP packets.

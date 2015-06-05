@@ -1,3 +1,33 @@
+openbazaar (0.5.0) unstable; urgency=low
+
+  Install/OS:
+  * Install haveged package on Raspbian arch.
+  * Explicitly use Python 2 on Arch distro.
+  * Improve caching of pip requirements in Dockerfile.
+
+  Documentation/UI/UX:
+  * Fix endless page reload.
+  * Improve rendering of long prices.
+  * Fix some broken links and update README.
+
+  Bitcoin:
+  * Reject invalid BTC payment addresses.
+
+  Network:
+  * GUID is now generated from the signed BTC pubkey, to prevent
+    spoofing attacks on DHT nodes (Spartacus attack).
+  * Rework code for the DHT data structures (dormant for now).
+  * Have peers relay only reachable close nodes.
+
+  Bug fixes:
+  * Handling of contract keywords fixed.
+  * Minor other fixes.
+
+  Miscellaneous:
+  * User can specify the seeds used to bootstrap the DHT.
+
+ -- OpenBazaar Team <project@openbazaar.org>  Wed, 3 June 2015 2:00:00 -0000
+
 openbazaar (0.4.0) unstable; urgency=low
 
   Install/OS:

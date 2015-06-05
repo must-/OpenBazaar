@@ -543,9 +543,15 @@ class ProtocolHandler(object):
         url = 'https://blockchain.info/ticker'
 
         def get_ticker():
-            usock = urllib2.urlopen(url)
-            data = usock.read()
-            usock.close()
+
+            try:
+                usock = urllib2.urlopen(url)
+                data = usock.read()
+                usock.close()
+            except Exception as usock_exception:
+                self.log.error('Cannot retrieve ticker info: %s', usock_exception.message)
+                return
+
             self.send_to_client(None, {
                 'type': 'btc_ticker',
                 'data': data

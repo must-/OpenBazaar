@@ -45,7 +45,7 @@
                                 <strong>Where would you like payment sent to? </strong>
                             </div>
                             <div class="col-sm-7 {{releasePaymentForm.bitcoinPaymentAddress.$invalid ? 'has-error' : ''}}">
-                                <input type="text" required class="form-control text" name="bitcoinPaymentAddress" data-ng-model="Market.modalOrder.paymentAddress" placeholder="Enter a Bitcoin address"/>
+                                <input type="text" required validate-bitcoin-address class="form-control text" name="bitcoinPaymentAddress" data-ng-model="Market.modalOrder.paymentAddress" placeholder="Enter a Bitcoin address"/>
                             </div>
                                 </div>
                             <div class="row" style="margin-top:10px;">

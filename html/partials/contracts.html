@@ -15,7 +15,7 @@
             </div>
         </div>
     </div>
-    
+
     <p></p>
 
     <div style="text-align:right" data-ng-show="total_contracts.length > 0">
@@ -40,7 +40,7 @@
         <tbody class="rtbody">
           <tr data-ng-repeat="contract in contracts" id="contract-row-{{contract.id}}" class="rtr">
           <!-- Product -->
-            <td data-label="Product" class="rtd"> 
+            <td data-label="Product" class="rtd">
               <a class="contract-title" data-ng-click="editContract(contract)">
               {{contract.item_title}}</a>
               <p>{{contract.item_desc | limitTo:120 }}</p>
@@ -50,16 +50,16 @@
                <br>
                <img class="contract-image" data-ng-if="contract.item_remote_images" data-ng-src="{{contract.item_remote_images[0]}}" />
            </td>
-                            
+
          <!-- Quantity -->
            <td data-label="Quantity" class="rtd">{{contract.item_quantity_available}}</td>
 
          <!-- Unit Price -->
-           <td data-label="Price" class="rtd">&#3647; {{contract.unit_price}}<br/></td>
-                            
+           <td data-label="Price" class="rtd">&#3647;&nbsp;{{contract.unit_price | satoshis}}<br/></td>
+
          <!-- Shipping Price -->
-           <td data-label="Shipping Price" class="rtd">&#3647; {{contract.shipping_price}}</td>
-                            
+           <td data-label="Shipping Price" class="rtd">&#3647;&nbsp;{{contract.shipping_price | satoshis}}</td>
+
          <!-- Edit and Remove Contract -->
            <td class="rtd">
              <div>

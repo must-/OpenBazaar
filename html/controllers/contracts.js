@@ -6,12 +6,23 @@
  * @constructor
  */
 angular.module('app')
+    .filter('satoshis', function() {
+        return function(input) {
+            input = parseFloat(input) || 0;
+            input = Math.min(input, 21e6);
+            // Convert to satoshis and divide; will round to nearest satoshi
+            // FIXME the API should be returning this in satoshis anyway
+            return Math.round(input * 1e8) / 1e8;
+        };
+    })
     .controller('Contracts', ['$scope', '$interval', '$routeParams', '$location', 'Connection',
         function($scope, $interval, $routeParams, $location, Connection) {
 
             $scope.contractsPanel = true;
             $scope.path = $location.path();
             $scope.$emit('sidebar', false);
+
+            Connection.send('get_btc_ticker', {});
 
             /**
              * Establish message handlers
@@ -155,6 +166,8 @@ angular.module('app')
             $scope.ProductModalInstance = function($scope, $modalInstance, contract, edit, scope) {
 
                 console.log('Last USD Price: ', scope.$parent.last_price_usd);
+                $scope.last_price_usd = scope.$parent.last_price_usd;
+                $scope.last_price_eur = scope.$parent.last_price_eur;
 
                 if(edit) {
                     contract = contract.contract;
@@ -171,7 +184,6 @@ angular.module('app')
                     $scope.contract.remoteImages = contract.item_remote_images;
                     $scope.contract.productKeywords = contract.item_keywords;
                     $scope.edit = true;
-
                 } else {
                     $scope.contract = contract;
                     $scope.contract.id = '';
@@ -183,16 +195,15 @@ angular.module('app')
                     $scope.contract.remoteImages = [];
                     $scope.contract.productKeywords = [];
                     $scope.edit = false;
-                    $scope.last_price_usd = scope.$parent.last_price_usd;
-                    $scope.last_price_eur = scope.$parent.last_price_eur;
                 }
 
                 console.log($scope.contract);
 
                 $scope.saveContract = function() {
 
-                    $scope.contract.productPrice = (String($scope.contract.productPrice).match(/^[+]?([0-9]+(?:[\.][0-9]*)?|\.[0-9]+)$/)) ? $scope.contract.productPrice : 0;
-                    $scope.contract.productShippingPrice = (String($scope.contract.productShippingPrice).match(/^[+]?([0-9]+(?:[\.][0-9]*)?|\.[0-9]+)$/)) ? $scope.contract.productShippingPrice : 0;
+                    var max = 21e6;
+                    $scope.contract.productPrice = Math.max(Math.min($scope.contract.productPrice, max), 0);
+                    $scope.contract.productShippingPrice = Math.max(Math.min($scope.contract.productShippingPrice, max), 0);
 
                     if (contract.contract) {
 
@@ -237,8 +248,16 @@ angular.module('app')
                             }
                         };
 
-                        var keywords = ($scope.contract.productKeywords[0]) ? $scope.contract.productKeywords.split(',') : [];
-                        $.each(keywords, function(i, el) {
+                        if(typeof($scope.contract.productKeywords) === 'string' && $scope.contract.productKeywords !== "") {
+                            item_keywords = $scope.contract.productKeywords.split(',');
+                        } else if (typeof($scope.contract.productKeywords) === 'object') {
+                            item_keywords = $scope.contract.productKeywords;
+                        } else {
+                            item_keywords = [];
+                        }
+
+                        contract.Contract.item_keywords = [];
+                        $.each(item_keywords, function(i, el) {
                             if ($.inArray(el.trim(), contract.Contract.item_keywords) === -1 && el.trim() !== '') {
                                 contract.Contract.item_keywords.push(el.trim());
                             }
@@ -276,8 +295,8 @@ angular.module('app')
                             Notifier.success('Success', 'Contract saved successfully.');
                         }
 
+                        $scope.contract = {};
                         Connection.send("query_contracts", {});
-
 
                     }
                     $modalInstance.dismiss('cancel');

@@ -162,9 +162,9 @@
 
             <h4>Refund Information</h4>
 
-            <div class="form-group">
-            <label for="inputRefundAddress">Bitcoin address for refunds:</label>
-            <input type="text" id="inputRefundAddress" name="inputRefundAddress" class="form-control col-sm-4" placeholder="Bitcoin Address" data-ng-model="order.buyerRefundAddress" value="{{myself.settings.refundAddress}}"/>
+            <div class="form-group {{!order.buyerRefundAddress ? 'has-error' : ''}}">
+                <label for="inputRefundAddress">Bitcoin address for refunds:</label>
+                <input type="text" id="inputRefundAddress" name="inputRefundAddress" validate-bitcoin-address required class="form-control col-sm-4" data-ng-model="order.buyerRefundAddress" value="{{myself.settings.refundAddress}}"/>
             </div>
 
             <!-- Hidden form fields for item -->
@@ -184,7 +184,7 @@
                 add a
                 notary or
                 arbiter on the <strong>Settings Page</strong> or <a
-                        href="https://github.com/OpenBazaar/OpenBazaar/wiki/Contracts-and-Listings" target="_blank">find
+                        href="https://github.com/OpenBazaar/OpenBazaar/wiki/04.-Contracts-and-Listings" target="_blank">find
                     out
                     more here</a>.
             </div>
@@ -244,7 +244,7 @@
        type="button">Order Details</a>
 
     <a class="btn btn-default" ng-show="order.step2" ng-click="gotoStep1()" type="button">Back</a>
-    <a class="btn btn-success" ng-show="order.step2" ng-click="gotoStep3()" type="button">Choose a Notary</a>
+    <a class="btn btn-success" ng-show="order.step2" data-ng-disabled="!order.buyerRefundAddress" ng-click="gotoStep3()" type="button">Choose a Notary</a>
 
     <a class="btn btn-default" ng-show="order.step3" ng-click="gotoStep2()" type="button">Back</a>
     <a class="btn btn-success" ng-show="order.step3" ng-click="submitOrder()" type="button">Submit Order</a>

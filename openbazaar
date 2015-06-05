@@ -10,12 +10,12 @@ fi
 # we make sure we are running standing at this location
 if expr "$0" : '.*/bin/openbazaar$' > /dev/null ; then
   PYBASE=${0%/bin/openbazaar}/share/openbazaar
-  (cd "$PYBASE" && python -m node.openbazaar "$@") &
+  (cd "$PYBASE" && python2 -m node.openbazaar "$@") &
 else
   # openbazaar not installed in the system, trying local install
   # with virtual environment first
-  if [ -f ./env/bin/python -a -r ./env/bin/python -a -x ./env/bin/python ] ; then
-    ./env/bin/python -m node.openbazaar "$@" &
+  if [ -f ./env/bin/python2 -a -r ./env/bin/python2 -a -x ./env/bin/python2 ] ; then
+    ./env/bin/python2 -m node.openbazaar "$@" &
   else
     python -m node.openbazaar "$@" &
   fi

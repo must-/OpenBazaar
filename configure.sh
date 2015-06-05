@@ -18,7 +18,7 @@
 UBUNTU_PACKAGES="python-pip build-essential rng-tools python-dev libjpeg-dev sqlite3 openssl alien libssl-dev python-virtualenv lintian libjs-jquery"
 ARCH_PACKAGES="python2 python2-pip python2-virtualenv rng-tools libjpeg sqlite3 openssl"
 RASPIARCH_PACKAGES="base-devel curl wget python2 python2-pip rng-tools libjpeg sqlite3 openssl libunistring"
-RASPBIAN_PACKAGES="python-pip build-essential rng-tools alien openssl libssl-dev python-dev libjpeg-dev sqlite3"
+RASPBIAN_PACKAGES="python-pip build-essential rng-tools alien openssl libssl-dev python-dev libjpeg-dev sqlite3 haveged"
 PORTAGE_PACKAGES="dev-lang/python:2.7 dev-python/pip rng-tools gcc jpeg sqlite3 openssl dev-python/virtualenv"
 FEDORA_PACKAGES="kernel-devel rng-tools openssl openssl-libs openssl-devel openjpeg openjpeg-devel make alien python2 python-pip python-virtualenv python-devel python-zmq zeromq3 zeromq3-devel pyOpenSSL"
 SLACK_PACKAGES="python pysetuptools pip virtualenv rng-tools libjpeg sqlite openssl" # if you change this, check the installSlack function carefully
